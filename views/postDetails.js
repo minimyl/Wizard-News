@@ -1,12 +1,5 @@
-const express = require('express')
-const postRouter = express.Router()
+function postDetails(post) {
 
-
-
-postRouter.get('/posts/:id', (req, res) => {
-    const id = req.params.id;
-    // const posts = postBank.list()
-    const post = postBank.find(id);
     if (!post.id) {
       throw new Error('Not Found')
     } else {
@@ -35,9 +28,9 @@ postRouter.get('/posts/:id', (req, res) => {
     </body>
   </html>`
   
-    res.send(html);}
-  });
+    return html}
+  };
 
 
 
-  module.exports = postRouter
+  module.exports = postDetails
