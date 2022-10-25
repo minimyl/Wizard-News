@@ -1,12 +1,6 @@
-const express = require('express')
-const postsRouter = express.Router()
-const timeAgo = require('node-time-ago');
+function postList(posts) {
 
-postsRouter.get("/", (req, res) => {
-
-    // const posts = postBank.list()
-  
-    const html = `<!DOCTYPE html>
+const html = `<!DOCTYPE html>
       <html>
       <head>
         <title>Wizard News</title>
@@ -31,8 +25,8 @@ postsRouter.get("/", (req, res) => {
     </body>
   </html>`
   
-    res.send(html);
-  });
+    return html;
+  };
 
 
-  module.exports = postsRouter
+  module.exports = postList
