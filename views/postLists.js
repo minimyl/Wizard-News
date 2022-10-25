@@ -1,5 +1,7 @@
-function postList(posts) {
+const timeAgo = require('node-time-ago')
 
+function postList(posts) {
+  
 const html = `<!DOCTYPE html>
       <html>
       <head>
