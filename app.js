@@ -5,6 +5,8 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.static('public'))
 
+
+
 app.get("/", (req, res) => {
 
   const posts = postBank.list()
@@ -37,11 +39,15 @@ app.get("/", (req, res) => {
   res.send(html);
 });
 
+
+
 app.get('/posts/:id', (req, res) => {
   const id = req.params.id;
   // const posts = postBank.list()
   const post = postBank.find(id);
-
+  if (!post.id) {
+    throw new Error('Not Found')
+  } else {
   const html = `<!DOCTYPE html>
     <html>
     <head>
@@ -67,8 +73,21 @@ app.get('/posts/:id', (req, res) => {
   </body>
 </html>`
 
-  res.send(html);
+  res.send(html);}
 });
+
+app.use((error, req, res, next) => {
+  console.error("there is an error: ", error);
+  if (res.statusCode < 400) {
+    res.status(500);
+  }
+
+
+  res.send({ error: error.message, message: error.message });
+});
+
+
+
 
 const PORT = 1337;
 
