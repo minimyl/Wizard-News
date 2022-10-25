@@ -1,47 +1,52 @@
 const express = require("express");
 const morgan = require("morgan");
 const postBank = require("./postBank")
+const postList = require("./postLists")
+const postId = require("./postId")
 const app = express();
 app.use(morgan('dev'));
 app.use(express.static('public'))
-const timeAgo = require('node-time-ago');
+// app.use("/postList", postsRouter)
+// app.use("/postId", postsRouter)
+// const timeAgo = require('node-time-ago');
 
 
+const postsRouter = require("./postLists");
+app.use("/posts", postsRouter);
 
-
-
-
+const postRouter = require("./postId");
+app.use("/posts", postRouter);
 
 app.get("/", (req, res) => {
 
   const posts = postBank.list()
+  res.send(postList(posts)) 
+//   const html = `<!DOCTYPE html>
+//     <html>
+//     <head>
+//       <title>Wizard News</title>
+//       <link rel="stylesheet" href="/style.css" />
 
-  const html = `<!DOCTYPE html>
-    <html>
-    <head>
-      <title>Wizard News</title>
-      <link rel="stylesheet" href="/style.css" />
+//     </head>
+//     <body>
+//     <div class="news-list">
+//       <header><img src="/logo.png"/>Wizard News</header>
+//       ${posts.map(post => `
+//         <div class='news-item'>
+//           <p>
+//             <span class="news-position">${post.id}. ▲</span><a href="/posts/${post.id}"> ${post.title}</a>
+//             <small>(by ${post.name})</small>
+//           </p>
+//           <small class="news-info">
+//             ${post.upvotes} upvotes | ${timeAgo(post.date)}
+//           </small>
+//         </div>`
+//       ).join('')}
+//     </div>
+//   </body>
+// </html>`
 
-    </head>
-    <body>
-    <div class="news-list">
-      <header><img src="/logo.png"/>Wizard News</header>
-      ${posts.map(post => `
-        <div class='news-item'>
-          <p>
-            <span class="news-position">${post.id}. ▲</span><a href="/posts/${post.id}"> ${post.title}</a>
-            <small>(by ${post.name})</small>
-          </p>
-          <small class="news-info">
-            ${post.upvotes} upvotes | ${timeAgo(post.date)}
-          </small>
-        </div>`
-      ).join('')}
-    </div>
-  </body>
-</html>`
-
-  res.send(html);
+  // res.send(html);
 });
 
 
@@ -50,35 +55,36 @@ app.get('/posts/:id', (req, res) => {
   const id = req.params.id;
   // const posts = postBank.list()
   const post = postBank.find(id);
-  if (!post.id) {
-    throw new Error('Not Found')
-  } else {
-  const html = `<!DOCTYPE html>
-    <html>
-    <head>
-      <title>Wizard News</title>
-      <link rel="stylesheet" href="/style.css" />
+  res.send(postId(post))
+//   if (!post.id) {
+//     throw new Error('Not Found')
+//   } else {
+//   const html = `<!DOCTYPE html>
+//     <html>
+//     <head>
+//       <title>Wizard News</title>
+//       <link rel="stylesheet" href="/style.css" />
       
-    </head>
-    <body>
-    <div class="news-list">
-      <header><img src="/logo.png"/>Wizard News</header>
+//     </head>
+//     <body>
+//     <div class="news-list">
+//       <header><img src="/logo.png"/>Wizard News</header>
       
-        <div class='news-item'>
-          <p>
-            <span class="news-position">${post.id}. ▲</span>${post.title}
-            <small>(by ${post.name})</small>
-            <div>${post.content}</div>
-          </p>
-          <small class="news-info">
-            ${post.upvotes} upvotes | ${post.date}
-          </small>
-        </div>
-    </div>
-  </body>
-</html>`
+//         <div class='news-item'>
+//           <p>
+//             <span class="news-position">${post.id}. ▲</span>${post.title}
+//             <small>(by ${post.name})</small>
+//             <div>${post.content}</div>
+//           </p>
+//           <small class="news-info">
+//             ${post.upvotes} upvotes | ${post.date}
+//           </small>
+//         </div>
+//     </div>
+//   </body>
+// </html>`
 
-  res.send(html);}
+//   res.send(html);}
 });
 
 app.use((error, req, res, next) => {
